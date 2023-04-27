@@ -12,5 +12,5 @@ public interface IPeople  extends JpaRepository<People, Integer> {
     List<People> findBylastnameStartingWith(String lastName);
 
 
-
+    List<People> findByCountry(String country);
 }

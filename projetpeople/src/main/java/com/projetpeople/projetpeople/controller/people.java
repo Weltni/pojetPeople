@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @Component
@@ -24,7 +25,7 @@ public class people {
 
 
 
-    @GetMapping("/test")
+    @GetMapping("/")
     public List<People> getAllPeople() {
         return peopleRepo.findAll();
     }
@@ -62,7 +63,7 @@ public class people {
         return peopleRepo.findById(id);
     }
 
-    @GetMapping("/test/{lastname}")
+    @GetMapping("/lastname/{lastname}")
     public List<People> getPeopleByName(@PathVariable String lastname) {
 
         return peopleRepo.findBylastnameStartingWith(lastname);
@@ -79,6 +80,33 @@ public class people {
         updatePeople.setCountry(peopleDetail.getCountry());
 
         peopleRepo.save(updatePeople);
+    }
+
+    @GetMapping("/country/{country}")
+    public List<People> getPeopleByCountry(@PathVariable String country){
+        List<People> peopleList = peopleRepo.findAll();
+
+        return peopleList.stream()
+                .filter(people -> people.getCountry().equals(country))
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/{country}/{telephone}")
+    public List<People> getPeopleCountrylastname(@PathVariable String country,@PathVariable String telephone){
+        List<People> peopleList = peopleRepo.findByCountry(country);
+
+        return peopleList.stream()
+                .filter(people -> people.getPhone().startsWith(telephone))
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/test/{param1}/{param2}")
+    public List<People> findnumber(@PathVariable String param1,@PathVariable String param2) {
+        List<People> peopleList = peopleRepo.findAll();
+        List<People> franceNum = peopleList.stream()
+                .filter(p -> p.getCountry().equals(param1) && p.getPhone().startsWith(param2))
+                .collect(Collectors.toList());
+        return franceNum;
     }
 
 }
